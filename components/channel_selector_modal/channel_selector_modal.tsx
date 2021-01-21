@@ -73,7 +73,7 @@ export default class ChannelSelectorModal extends React.PureComponent<Props, Sta
                 this.searchTimeoutId = window.setTimeout(
                     async () => {
                         this.setChannelsLoadingState(true);
-                        const response = await this.props.actions.searchAllChannels(searchTerm, {not_associated_to_group: this.props.groupID});
+                        const response = await this.props.actions.searchAllChannels(searchTerm, {not_associated_to_group: this.props.groupID, search_columns: ['DisplayName']});
                         this.setState({channels: response.data});
                         this.setChannelsLoadingState(false);
                     },
