@@ -1,0 +1,60 @@
+.Table__table {
+    width: 100%;
+
+    th, td {
+        padding: 4px 12px;
+    }
+}
+
+.Table__table-header {
+    line-height: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(var(--sys-center-channel-color-rgb), 0.16);
+
+    &:last-child {
+        border-bottom: 1px solid rgba(var(--sys-center-channel-color-rgb), 0.08);
+    }
+}
+
+.Table__table-row {
+    height: 41px;
+
+    &:nth-child(odd) {
+        background: rgba(var(--sys-button-bg-rgb), 0.04);
+    }
+    &:hover {
+        background: rgba(var(--sys-button-bg-rgb), 0.08);
+        cursor: pointer;
+        color: #3D3C40;
+    }
+    .Table__table-icon {
+        width: 56px;
+    }
+    &:hover .Table__table-icon a {
+        display: flex;
+    }
+    .Table__table-icon a {
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 4px;
+        background: rgba(61, 60, 64, 0.08);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        color: rgba(61, 60, 64, 0.72);
+        margin-left: auto;
+    }
+}
+
+.Table__table-bottomDesc {
+    margin-top: 4px;
+    color: rgba(var(--sys-center-channel-color-rgb), 0.56);
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.Table__table-headerTotal {
+    text-align: right;
+}

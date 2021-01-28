@@ -7,12 +7,18 @@ import {FormattedMessage} from 'react-intl';
 import {JobTypes} from 'utils/constants';
 import * as Utils from 'utils/utils.jsx';
 import ConfirmModal from 'components/confirm_modal';
+import 'components/next_steps_view/next_steps_view.scss';
+import MenuWrapper from 'components/widgets/menu/menu_wrapper';
+import Menu from 'components/widgets/menu/menu';
 
 import AdminSettings from './admin_settings';
-import DropdownSetting from './dropdown_setting.jsx';
+import Card from './card/card.tsx';
 import JobsTable from './jobs';
 import SettingsGroup from './settings_group.jsx';
+import DataTable, {Row, Column} from './data_table/data_table';
 import TextSetting from './text_setting';
+
+import './billing/billing_history.scss';
 
 export default class DataRetentionSettings extends AdminSettings {
     getConfigFromState = (config) => {
@@ -157,6 +163,175 @@ export default class DataRetentionSettings extends AdminSettings {
             />
         );
     }
+    getGlobalPolicyColumns = () => {
+        return [
+            {
+                name: (
+                    <FormattedMessage
+                        id='admin.data_retention.globalPoliciesTable.description'
+                        defaultMessage='Description'
+                    />
+                ),
+                field: 'description',
+            },
+            {
+                name: (
+                    <FormattedMessage
+                        id='admin.data_retention.globalPoliciesTable.channelMessages'
+                        defaultMessage='Channel messages'
+                    />
+                ),
+                field: 'channel_messages',
+            },
+            {
+                name: (
+                    <FormattedMessage
+                        id='admin.data_retention.globalPoliciesTable.files'
+                        defaultMessage='Files'
+                    />
+                ),
+                field: 'files',
+            },
+            {
+                name: '',
+                field: 'actions',
+                customClass: 'Table__table-icon'
+            },
+        ];
+    }
+    getGlobalPolicyRows = () => {
+        // Global policy data
+        const data = [
+            {
+                description: "Applies to all teams and channels, but does not apply to custom retention policies.",
+                channel_messages: "Keep forever",
+                files: "Keep forever",
+            },
+        ]
+
+        return data.map((policy) => {
+            return {
+                cells: {
+                    description: policy.description,
+                    channel_messages: policy.channel_messages,
+                    files: policy.files,
+                    actions: (
+                        <MenuWrapper
+                            isDisabled={false}
+                        >
+                            <div className='text-right'>
+                                <a>
+                                    <i className='icon icon-dots-vertical'/>
+                                </a>
+                            </div>
+                            <Menu
+                                openLeft={false}
+                                openUp={false}
+                                ariaLabel={'User Actions Menu'}
+                            >
+                                <Menu.ItemAction
+                                    show={true}
+                                    onClick={() => {}}
+                                    text={'Edit'}
+                                    disabled={false}
+                                />
+                            </Menu>
+                        </MenuWrapper>
+                    ),
+                },
+            };
+        });
+    }
+    getCustomPolicyColumns = () => {
+        return [
+            {
+                name: (
+                    <FormattedMessage
+                        id='admin.data_retention.customPoliciesTable.description'
+                        defaultMessage='Description'
+                    />
+                ),
+                field: 'description',
+            },
+            {
+                name: (
+                    <FormattedMessage
+                        id='admin.data_retention.customPoliciesTable.channelMessages'
+                        defaultMessage='Channel messages'
+                    />
+                ),
+                field: 'channel_messages',
+            },
+            {
+                name: (
+                    <FormattedMessage
+                        id='admin.data_retention.customPoliciesTable.appliedTo'
+                        defaultMessage='Applied to'
+                    />
+                ),
+                field: 'applied_to',
+            },
+            {
+                name: '',
+                field: 'actions',
+                customClass: 'Table__table-icon'
+            },
+        ];
+    }
+    getCustomPolicyRows = () => {
+        // Custom policy data
+        const data = [
+            {
+                description: "60 day policy",
+                channel_messages: "60 days",
+                applied_to: "2 teams, 4 channels",
+            },
+            {
+                description: "Yearly policy",
+                channel_messages: "1 year",
+                applied_to: "17 teams",
+            },
+        ]
+
+        return data.map((policy, i) => {
+            return {
+                cells: {
+                    description: policy.description,
+                    channel_messages: policy.channel_messages,
+                    applied_to: policy.applied_to,
+                    actions: (
+                        <MenuWrapper
+                            isDisabled={false}
+                        >
+                            <div className='text-right'>
+                                <a>
+                                    <i className='icon icon-dots-vertical'/>
+                                </a>
+                            </div>
+                            <Menu
+                                openLeft={false}
+                                openUp={false}
+                                ariaLabel={'User Actions Menu'}
+                            >
+                                <Menu.ItemAction
+                                    show={true}
+                                    onClick={() => {}}
+                                    text={'Edit'}
+                                    disabled={false}
+                                />
+                                <Menu.ItemAction
+                                    show={true}
+                                    onClick={() => {}}
+                                    text={'Delete'}
+                                    disabled={false}
+                                />
+                            </Menu>
+                        </MenuWrapper>
+                    ),
+                },
+            };
+        });
+    }
 
     renderSettings = () => {
         const enableMessageDeletionOptions = [
@@ -215,107 +390,91 @@ export default class DataRetentionSettings extends AdminSettings {
 
         return (
             <SettingsGroup>
-                {confirmModal}
-                <div className='banner'>
-                    <div className='banner__content'>
+                <Card
+                    title={
                         <FormattedMessage
-                            id='admin.data_retention.note.description'
-                            defaultMessage='Caution: Once a message or a file is deleted, the action is irreversible. Please be careful when setting up a custom data retention policy. See {documentationLink} to learn more.'
-                            values={{
-                                documentationLink: (
-                                    <a
-                                        href='https://about.mattermost.com/default-dataretention-documentation/'
-                                        rel='noopener noreferrer'
-                                        target='_blank'
-                                    >
-                                        <FormattedMessage
-                                            id='admin.data_retention.note.description.documentationLinkText'
-                                            defaultMessage='documentation'
-                                        />
-                                    </a>
-                                ),
-                            }}
+                            id='admin.data_retention.globalPolicy.title'
+                            defaultMessage='Global retention policy'
+                        />
+                    }
+                    subtitle={
+                        <FormattedMessage
+                            id='admin.data_retention.globalPolicy.subTitle'
+                            defaultMessage='Keep messages and files for a set amount of time.'
+                        />
+                    }
+                    body={
+                        <DataTable 
+                            columns={this.getGlobalPolicyColumns()}
+                            rows={this.getGlobalPolicyRows()}
+                        />
+                    }
+                />
+                <Card
+                    title={
+                        <FormattedMessage
+                            id='admin.data_retention.customPolicies.title'
+                            defaultMessage='Custom retention policies'
+                        />
+                    }
+                    subtitle={
+                        <FormattedMessage
+                            id='admin.data_retention.customPolicies.subTitle'
+                            defaultMessage='Customize how long specific teams and channels will keep messages.'
+                        />
+                    }
+                    buttonText={
+                        <FormattedMessage
+                            id='admin.data_retention.customPolicies.addPolicy'
+                            defaultMessage='Add policy'
+                        />
+                    }
+                    body ={
+                        <DataTable 
+                            columns={this.getCustomPolicyColumns()}
+                            rows={this.getCustomPolicyRows()}
+                        />
+                    }
+                />
+
+                <div className='BillingHistory__card'>
+                    <div className='BillingHistory__cardHeader'>
+                        <div className='BillingHistory__cardHeaderText'>
+                            <div className='BillingHistory__cardHeaderText-top'>
+                                <FormattedMessage
+                                    id='admin.data_retention.jobCreation.title'
+                                    defaultMessage='Policy log'
+                                />
+                            </div>
+                            <div className='BillingHistory__cardHeaderText-bottom'>
+                                <FormattedMessage
+                                    id='admin.data_retention.jobCreation.subTitle'
+                                    defaultMessage='Daily log of messages and files removed based on the policies defined above.'
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className='BillingHistory__cardBody'>
+                        <JobsTable
+                            jobType={JobTypes.DATA_RETENTION}
+                            disabled={this.state.enableMessageDeletion !== 'true' && this.state.enableFileDeletion !== 'true'}
+                            createJobButtonText={
+                                <FormattedMessage
+                                    id='admin.data_retention.createJob.title'
+                                    defaultMessage='Run Deletion Job Now'
+                                />
+                            }
+                            createJobHelpText={
+                                <FormattedMessage
+                                    id='admin.data_retention.createJob.help'
+                                    defaultMessage='Initiates a Data Retention deletion job immediately.'
+                                />
+                            }
                         />
                     </div>
                 </div>
-                <DropdownSetting
-                    id='enableMessageDeletion'
-                    values={enableMessageDeletionOptions}
-                    label={
-                        <FormattedMessage
-                            id='admin.data_retention.enableMessageDeletion.title'
-                            defaultMessage='Message Retention:'
-                        />
-                    }
-                    helpText={
-                        <FormattedMessage
-                            id='admin.data_retention.enableMessageDeletion.description'
-                            defaultMessage='Set how long Mattermost keeps messages in channels and direct messages.'
-                        />
-                    }
-                    value={this.state.enableMessageDeletion}
-                    onChange={this.handleChange}
-                    setByEnv={this.isSetByEnv('DataRetentionSettings.EnableMessageDeletion')}
-                    disabled={this.props.isDisabled}
-                />
-                {messageRetentionDaysSetting}
-                <DropdownSetting
-                    id='enableFileDeletion'
-                    values={enableFileDeletionOptions}
-                    label={
-                        <FormattedMessage
-                            id='admin.data_retention.enableFileDeletion.title'
-                            defaultMessage='File Retention:'
-                        />
-                    }
-                    helpText={
-                        <FormattedMessage
-                            id='admin.data_retention.enableFileDeletion.description'
-                            defaultMessage='Set how long Mattermost keeps file uploads in channels and direct messages.'
-                        />
-                    }
-                    value={this.state.enableFileDeletion}
-                    onChange={this.handleChange}
-                    setByEnv={this.isSetByEnv('DataRetentionSettings.EnableFileDeletion')}
-                    disabled={this.props.isDisabled}
-                />
-                {fileRetentionDaysSetting}
-                <TextSetting
-                    id='deletionJobStartTime'
-                    label={
-                        <FormattedMessage
-                            id='admin.data_retention.deletionJobStartTime.title'
-                            defaultMessage='Data Deletion Time:'
-                        />
-                    }
-                    placeholder={Utils.localizeMessage('admin.data_retention.deletionJobStartTime.example', 'E.g.: "02:00"')}
-                    helpText={
-                        <FormattedMessage
-                            id='admin.data_retention.deletionJobStartTime.description'
-                            defaultMessage='Set the start time of the daily scheduled data retention job. Choose a time when fewer people are using your system. Must be a 24-hour time stamp in the form HH:MM.'
-                        />
-                    }
-                    value={this.state.deletionJobStartTime}
-                    onChange={this.handleChange}
-                    setByEnv={this.isSetByEnv('DataRetentionSettings.DeletionJobStartTime')}
-                    disabled={this.props.isDisabled}
-                />
-                <JobsTable
-                    jobType={JobTypes.DATA_RETENTION}
-                    disabled={this.state.enableMessageDeletion !== 'true' && this.state.enableFileDeletion !== 'true'}
-                    createJobButtonText={
-                        <FormattedMessage
-                            id='admin.data_retention.createJob.title'
-                            defaultMessage='Run Deletion Job Now'
-                        />
-                    }
-                    createJobHelpText={
-                        <FormattedMessage
-                            id='admin.data_retention.createJob.help'
-                            defaultMessage='Initiates a Data Retention deletion job immediately.'
-                        />
-                    }
-                />
+                
             </SettingsGroup>
         );
     }

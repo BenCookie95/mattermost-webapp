@@ -46,6 +46,7 @@ import ChannelDetails from './team_channel_settings/channel/details';
 import PasswordSettings from './password_settings.jsx';
 import PushNotificationsSettings from './push_settings.jsx';
 import DataRetentionSettings from './data_retention_settings.jsx';
+import DataRetentionCustomPolicySettings from './data_retention_custom_policy_settings.tsx'
 import MessageExportSettings from './message_export_settings.jsx';
 import DatabaseSettings from './database_settings.jsx';
 import ElasticSearchSettings from './elasticsearch_settings.jsx';
@@ -5063,6 +5064,20 @@ const AdminDefinition = {
             schema: {
                 id: 'DataRetentionSettings',
                 component: DataRetentionSettings,
+            },
+        },
+        custom_data_retention: {
+            url: 'compliance/custom_policy',
+            title: t('admin.sidebar.users'),
+            title_default: 'Custom retention policy',
+            searchableStrings: [
+                ['admin.data_retention.custom_policy.title'],
+            ],
+            isHidden: it.not(it.licensedForFeature('DataRetention')),
+            isDisabled: it.not(it.userHasWritePermissionOnResource('compliance')),
+            schema: {
+                id: 'DataRetentionCustomPolicySettings',
+                component: DataRetentionCustomPolicySettings,
             },
         },
         message_export: {
