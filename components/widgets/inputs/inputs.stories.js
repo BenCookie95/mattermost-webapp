@@ -7,7 +7,9 @@ import {storiesOf} from '@storybook/react';
 import {withKnobs, text} from '@storybook/addon-knobs';
 
 import ChannelsInput from './channels_input';
+import * as Utils from 'utils/utils.jsx';
 import UsersEmailsInput from './users_emails_input';
+import DropdownInputTransformer from './dropdown_input_transformer';
 
 storiesOf('Widgets/Inputs', module).
     addDecorator(withKnobs).
@@ -47,6 +49,27 @@ storiesOf('Widgets/Inputs', module).
                         loadingMessageId='not-existing-id'
                         noOptionsMessageDefault={noOptionsMessageDefault}
                         noOptionsMessageId='not-existing-id'
+                    />
+                );
+            };
+            return (
+                <WrapperComponent/>
+            );
+        },
+    ).
+    add(
+        'dropdown transformer input',
+        () => {
+            const WrapperComponent = () => {
+
+                return (
+                    <DropdownInputTransformer
+                        onChange={() => {}}
+                        value={undefined}
+                        options={[{value: 'Ben', label: 'Ben'}, {value: 'Conor', label: 'Conor'}]}
+                        legend={Utils.localizeMessage('admin.billing.company_info.country', 'Country')}
+                        placeholder={Utils.localizeMessage('admin.billing.company_info.country', 'Country')}
+                        name={'country_dropdown'}
                     />
                 );
             };

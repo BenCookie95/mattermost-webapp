@@ -20,7 +20,24 @@ import TextSetting from './text_setting';
 
 import './billing/billing_history.scss';
 
+const RECORDS_PER_PAGE = 10;
+
 export default class DataRetentionSettings extends AdminSettings {
+    constructor(props) {
+        super(props);
+        this.state = {
+            customPolicyLoading: false,
+            globalPolicyLoading: true,
+            customPolicyPage: 0,
+            globalPolicyPage: 0,
+            addChannelOpen: false,
+            saveNeeded: false,
+            saving: false,
+            serverError: null,
+            errorTooltip: false,
+        };
+    }
+
     getConfigFromState = (config) => {
         config.DataRetentionSettings.EnableMessageDeletion = this.state.enableMessageDeletion === 'true';
         config.DataRetentionSettings.EnableFileDeletion = this.state.enableFileDeletion === 'true';
@@ -291,6 +308,36 @@ export default class DataRetentionSettings extends AdminSettings {
                 channel_messages: "1 year",
                 applied_to: "17 teams",
             },
+            {
+                description: "60 day policy",
+                channel_messages: "60 days",
+                applied_to: "2 teams, 4 channels",
+            },
+            {
+                description: "Yearly policy",
+                channel_messages: "1 year",
+                applied_to: "17 teams",
+            },
+            {
+                description: "60 day policy",
+                channel_messages: "60 days",
+                applied_to: "2 teams, 4 channels",
+            },
+            {
+                description: "Yearly policy",
+                channel_messages: "1 year",
+                applied_to: "17 teams",
+            },
+            {
+                description: "60 day policy",
+                channel_messages: "60 days",
+                applied_to: "2 teams, 4 channels",
+            },
+            {
+                description: "Yearly policy",
+                channel_messages: "1 year",
+                applied_to: "17 teams",
+            },
         ]
 
         return data.map((policy, i) => {
@@ -332,7 +379,21 @@ export default class DataRetentionSettings extends AdminSettings {
             };
         });
     }
+    printTest = () => {
+        console.log('HELLO');
+    }
 
+    getPaginationProps = () => {
+        let {total} = 8;
+        const {customPolicyPage} = this.state;
+        const startCount = (customPolicyPage * RECORDS_PER_PAGE) + 1;
+        let endCount = (customPolicyPage + 1) * RECORDS_PER_PAGE;
+
+        if (endCount > total) {
+            endCount = total;
+        }
+        return {startCount, endCount, total};
+    }
     renderSettings = () => {
         const enableMessageDeletionOptions = [
             {value: 'false', text: Utils.localizeMessage('admin.data_retention.keepMessagesIndefinitely', 'Keep all messages indefinitely')},
@@ -387,6 +448,7 @@ export default class DataRetentionSettings extends AdminSettings {
         }
 
         const confirmModal = this.renderConfirmModal();
+        const {startCount, endCount, total} = this.getPaginationProps();
 
         return (
             <SettingsGroup>
@@ -404,10 +466,18 @@ export default class DataRetentionSettings extends AdminSettings {
                         />
                     }
                     body={
-                        <DataTable 
-                            columns={this.getGlobalPolicyColumns()}
-                            rows={this.getGlobalPolicyRows()}
-                        />
+                        // <DataTable 
+                        //     columns={this.getGlobalPolicyColumns()}
+                        //     rows={this.getGlobalPolicyRows()}
+                        //     data={[
+                        //         {
+                        //             description: "Applies to all teams and channels, but does not apply to custom retention policies.",
+                        //             channel_messages: "Keep forever",
+                        //             files: "Keep forever",
+                        //         }
+                        //     ]}
+                        // />
+                        'hi'
                     }
                 />
                 <Card
@@ -429,12 +499,20 @@ export default class DataRetentionSettings extends AdminSettings {
                             defaultMessage='Add policy'
                         />
                     }
-                    body ={
+                    body={
                         <DataTable 
                             columns={this.getCustomPolicyColumns()}
                             rows={this.getCustomPolicyRows()}
+                            loading={this.state.customPolicyLoading}
+                            page={this.state.customPolicyPage}
+                            nextPage={this.nextPage}
+                            previousPage={this.previousPage}
+                            startCount={startCount}
+                            endCount={endCount}
+                            total={total}
                         />
                     }
+                    onClick={this.printTest}
                 />
 
                 <div className='BillingHistory__card'>

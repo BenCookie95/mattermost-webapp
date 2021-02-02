@@ -5,11 +5,11 @@ import React from 'react';
 
 import './card.scss';
 
-type Props = {
-    title: string | JSX.Element;
-    subtitle: string | JSX.Element;
-    body: string | JSX.Element;
-    buttonText?: string| JSX.Element;
+export type Props = {
+    title: JSX.Element;
+    subtitle: JSX.Element;
+    body: JSX.Element;
+    buttonText?: JSX.Element;
     onClick?: () => void;
 };
 

@@ -12,8 +12,10 @@ import MenuWrapper from 'components/widgets/menu/menu_wrapper';
 import Menu from 'components/widgets/menu/menu';
 
 import AdminSettings, {BaseProps, BaseState} from './admin_settings';
-import Card from './card/card.tsx';
+import Card from './card/card';
 import ChannelsList from 'components/admin_console/team_channel_settings/channel/list';
+import Input from 'components/input';
+import DropdownInput from 'components/dropdown_input';
 import TeamList from 'components/admin_console/team_channel_settings/team/list';
 import SettingsGroup from './settings_group.jsx';
 import TeamSelectorModal from 'components/team_selector_modal';
@@ -96,7 +98,24 @@ export default class DataRetentionCustomPolicySettings extends AdminSettings<Pro
                         />
                     }
                     body={
-                        ''
+                        <>
+                            <Input
+                                name='policyName'
+                                type='text'
+                                value={''}
+                                onChange={() => {}}
+                                placeholder={Utils.localizeMessage('admin.data_retention.custom_policy.form.input', 'Policy name')}
+                                required={true}
+                            />
+                            <DropdownInput
+                                onChange={() => {}}
+                                value={undefined}
+                                options={[{value: 'Ben', label: 'Ben'}, {value: 'Conor', label: 'Conor'}]}
+                                legend={Utils.localizeMessage('admin.billing.company_info.country', 'Country')}
+                                placeholder={Utils.localizeMessage('admin.billing.company_info.country', 'Country')}
+                                name={'country_dropdown'}
+                            />
+                        </>
                     }
                 />
                 {this.state.addTeamOpen &&

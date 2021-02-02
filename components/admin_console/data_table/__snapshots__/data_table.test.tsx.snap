@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components/admin_console/data_grid/DataGrid should match snapshot while loading 1`] = `
+<Fragment>
+  <table
+    className="Table__table"
+  >
+    <DataTableHeader
+      columns={Array []}
+    />
+    <Component />
+  </table>
+  <Component />
+</Fragment>
+`;
+
+exports[`components/admin_console/data_grid/DataGrid should match snapshot with content and custom styling on rows 1`] = `
+<Fragment>
+  <table
+    className="Table__table"
+  >
+    <DataTableHeader
+      columns={
+        Array [
+          Object {
+            "field": "name",
+            "name": "Name",
+          },
+          Object {
+            "field": "team",
+            "name": "Team",
+          },
+        ]
+      }
+    />
+    <Component />
+  </table>
+  <Component />
+</Fragment>
+`;
+
+exports[`components/admin_console/data_grid/DataGrid should match snapshot with no items found 1`] = `
+<Fragment>
+  <table
+    className="Table__table"
+  >
+    <DataTableHeader
+      columns={Array []}
+    />
+    <Component />
+  </table>
+  <Component />
+</Fragment>
+`;

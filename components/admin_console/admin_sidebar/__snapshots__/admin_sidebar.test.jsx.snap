@@ -1467,6 +1467,20 @@ exports[`components/AdminSidebar should match snapshot, with license (with all f
               }
             />
             <AdminSidebarSection
+              definitionKey="compliance.custom_data_retention"
+              key="compliance.custom_data_retention"
+              name="compliance/custom_policy"
+              parentLink=""
+              subsection={false}
+              tag=""
+              title={
+                <FormattedMessage
+                  defaultMessage="Custom retention policy"
+                  id="admin.sidebar.users"
+                />
+              }
+            />
+            <AdminSidebarSection
               definitionKey="compliance.message_export"
               key="compliance.message_export"
               name="compliance/export"
