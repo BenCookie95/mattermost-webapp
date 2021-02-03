@@ -91,11 +91,12 @@ const DataTable: React.FC<Props> = (props) => {
                 </div>
             );
         } else {
-            rowsToRender = rows.map((row: Row) => {
+            rowsToRender = rows.map((row: Row, i: number) => {
                 return (
                     <DataTableRow
                         row={row}
                         columns={props.columns}
+                        key={i}
                     />
                 )
             })
@@ -112,7 +113,6 @@ const DataTable: React.FC<Props> = (props) => {
     const renderFooter = (): JSX.Element | null => {
         const {startCount, endCount, total} = props;
         let footer: JSX.Element | null = null;
-
         if (total) {
             const firstPage = startCount <= 1;
             const lastPage = endCount >= total;
@@ -163,9 +163,9 @@ const DataTable: React.FC<Props> = (props) => {
                 <DataTableHeader
                     columns={props.columns}
                 />
-                {renderRows}
+                {renderRows()}
             </table>
-            {renderFooter}
+            {renderFooter()}
         </>
     );
 };

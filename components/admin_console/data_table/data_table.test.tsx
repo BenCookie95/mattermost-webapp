@@ -6,7 +6,10 @@ import {shallow} from 'enzyme';
 
 import DataTable from './data_table';
 
-describe('components/admin_console/data_grid/DataGrid', () => {
+describe('components/admin_console/data_table/DataTable', () => {
+
+    const RECORDS_PER_PAGE = 5;
+
     const baseProps = {
         page: 1,
         startCount: 0,
@@ -40,7 +43,7 @@ describe('components/admin_console/data_grid/DataGrid', () => {
         expect(wrapper).toMatchSnapshot();
     });
 
-    test('should match snapshot with content and custom styling on rows', () => {
+    test('should match snapshot with only one page of results', () => {
         const wrapper = shallow(
             <DataTable
                 {...baseProps}
@@ -53,6 +56,10 @@ describe('components/admin_console/data_grid/DataGrid', () => {
                     {name: 'Name', field: 'name'},
                     {name: 'Team', field: 'team'},
                 ]}
+                page={0}
+                startCount={1}
+                endCount={3}
+                total={3}
             />,
         );
         expect(wrapper).toMatchSnapshot();
