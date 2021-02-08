@@ -6,6 +6,7 @@
 
     .Input_wrapper {
         padding: 0 1px;
+        margin: 0;
     }
 
     .Input {
@@ -49,4 +50,14 @@
 
 .DropdownInput__option.focused > div {
     background-color: rgba(var(--center-channel-color-rgb), 0.08);
+}
+
+.Input_fieldset:focus-within {
+    box-shadow: none;
+}
+.Input.form-control {
+    height: 40px;
+    border: none;
+    border-right: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
+    border-radius: 0;
 }

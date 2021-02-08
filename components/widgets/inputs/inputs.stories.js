@@ -61,15 +61,25 @@ storiesOf('Widgets/Inputs', module).
         'dropdown transformer input',
         () => {
             const WrapperComponent = () => {
-
+                const [dropdownValue, setDropdownValue] = useState('');
+                const [inputValue, setInputValue] = useState('');
                 return (
                     <DropdownInputTransformer
-                        onChange={() => {}}
-                        value={undefined}
-                        options={[{value: 'Ben', label: 'Ben'}, {value: 'Conor', label: 'Conor'}]}
-                        legend={Utils.localizeMessage('admin.billing.company_info.country', 'Country')}
-                        placeholder={Utils.localizeMessage('admin.billing.company_info.country', 'Country')}
-                        name={'country_dropdown'}
+                        onDropdownChange={(e) => {
+                            setDropdownValue(e.value);
+                        }}
+                        onInputChange={(e) => {
+                            setInputValue(e.target.value);
+                        }}
+                        value={dropdownValue}
+                        inputValue={inputValue}
+                        width={500}
+                        exceptionToInput={['forever']}
+                        defaultValue={{value: 'forever', label: 'Keep Forever'}}
+                        options={[{value: 'days', label: 'Days'}, {value: 'months', label: 'Months'}, {value: 'years', label: 'Years'}, {value: 'forever', label: 'Keep Forever'}]}
+                        legend={Utils.localizeMessage('admin.data_retention.form.channelMessageRetention', 'Channel Message Retention')}
+                        placeholder={Utils.localizeMessage('admin.data_retention.form.channelMessageRetention', 'Channel Message Retention')}
+                        name={'channel_message_retention'}
                     />
                 );
             };

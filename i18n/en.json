@@ -581,6 +581,7 @@
   "admin.data_retention.customPoliciesTable.description": "Description",
   "admin.data_retention.fileRetentionDays.description": "Set how many days file uploads are kept in Mattermost. Files older than the duration you set will be deleted nightly. The minimum time is one day.",
   "admin.data_retention.fileRetentionDays.example": "E.g.: \"60\"",
+  "admin.data_retention.form.channelMessageRetention": "Channel Message Retention",
   "admin.data_retention.globalPoliciesTable.channelMessages": "Channel & direct messages",
   "admin.data_retention.globalPoliciesTable.description": "Description",
   "admin.data_retention.globalPoliciesTable.files": "Files",

@@ -1,14 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState, CSSProperties} from 'react';
+import React, {useState, CSSProperties, useEffect, useRef} from 'react';
 import ReactSelect, {Props as SelectProps, ActionMeta, components} from 'react-select';
 import classNames from 'classnames';
 
-import DropdownInput from 'components/dropdown_input';
-import Input from 'components/input';
-import * as Utils from 'utils/utils.jsx';
-
+import 'components/input.css';
 import './dropdown_input_transformer.scss';
 
 type ValueType = {
@@ -20,7 +17,8 @@ type Props<T> = Omit<SelectProps<T>, 'onChange'> & {
     value?: T;
     legend?: string;
     error?: string;
-    onChange: (value: T, action: ActionMeta<T>) => void;
+    onDropdownChange: (value: T, action: ActionMeta<T>) => void;
+    onInputChange: (value: T, action: ActionMeta<T>) => void;
 };
 
 const baseStyles = {
@@ -40,6 +38,8 @@ const baseStyles = {
         display: 'none',
     }),
 };
+
+
 
 const IndicatorsContainer = (props: any) => {
     return (
@@ -85,9 +85,49 @@ const renderError = (error?: string) => {
     );
 };
 const DropdownInputTransformer: React.FC<Props> = (props) => {
-    const {value, placeholder, className, addon, name, textPrefix, legend, onChange, styles, options, error, ...otherProps} = props;
+    const {value, placeholder, className, addon, name, textPrefix, legend, onDropdownChange, onInputChange, styles, options, error, exceptionToInput, width, inputValue, ...otherProps} = props;
 
     const [focused, setFocused] = useState(false);
+    const [showInput, setShowInput] = useState(false);
+    const previousValue = usePrevious(showInput);
+
+    useEffect(() => {
+        if ((!previousValue && showInput)) {
+            inputRef.current.focus();
+        }
+    });
+
+    // Hook
+    function usePrevious (val) {
+        // The ref object is a generic container whose current property is mutable ...
+        // ... and can hold any value, similar to an instance property on a class
+        const ref = useRef();
+
+        // Store current value in ref
+        useEffect(() => {
+            ref.current = val;
+        }, [val]); // Only re-run if value changes
+
+        // Return previous value (happens before update in useEffect above)
+        return ref.current;
+    }
+
+    const inputRef: any = React.createRef();
+
+    const menuStyles = {
+        menu: (provided: CSSProperties) => ({
+            ...provided,
+            width: `${width}px`,
+            left: `-${width - width/4}px`
+        }),
+    }
+
+    const getMenuStyles = () => {
+        if (showInput) {
+            return menuStyles;
+        }
+        return {};
+    }
 
     const onInputFocus = (event: React.FocusEvent<HTMLElement>) => {
         const {onFocus} = props;
@@ -108,23 +148,39 @@ const DropdownInputTransformer: React.FC<Props> = (props) => {
             onBlur(event);
         }
     };
+    const onValueChange = async (event: React.FocusEvent<HTMLElement>) => {
+        const {onDropdownChange, value} = props;
+        if (event.value != value) {
+            showTextInput(event.value);
+        }
+
+        if (onDropdownChange) {
+            await onDropdownChange(event);
+        }
+    };
+    
+    // We want to show the text input when we have a dropdown value selected and 
+    const showTextInput = (val) => {
+        if (val === '' || exceptionToInput.includes(val)) {
+            setShowInput(false);
+        } else {
+            setShowInput(true);
+        }
+    }
 
     const showLegend = Boolean(focused || value);
     return (
-        <>
-        <Input
-            name='policyName'
-            type='text'
-            value={''}
-            onChange={() => {}}
-            placeholder={Utils.localizeMessage('admin.data_retention.custom_policy.form.input', 'Policy name')}
-            required={true}
-        />
-        <div className='DropdownInput Input_container'>
+        <div 
+            className='DropdownInput Input_container'
+            style={{
+                width: `${width}px`
+            }}
+        >
             <fieldset
                 className={classNames('Input_fieldset', className, {
                     Input_fieldset___error: error,
                     Input_fieldset___legend: showLegend,
+                    Input_fieldset___split: showInput,
                 })}
             >
                 <legend className={classNames('Input_legend', {Input_legend___focus: showLegend})}>
@@ -132,10 +188,31 @@ const DropdownInputTransformer: React.FC<Props> = (props) => {
                 </legend>
                 <div
                     className='Input_wrapper'
+                    style={{
+                        display: showInput ? 'inline-block' : 'none',
+                        width: `calc(100% - ${width/4}px)`
+                    }}
+                >
+                    <input
+                        name='channel_message_retention_input'
+                        type='text'
+                        value={inputValue}
+                        onChange={onInputChange}
+                        placeholder={placeholder}
+                        required={false}
+                        className={classNames('Input form-control')}
+                        ref={inputRef}
+                    />
+                </div>
+                <div
+                    className='Input_wrapper'
                     onFocus={onInputFocus}
                     onBlur={onInputBlur}
+                    style={{ 
+                        display: 'inline-block',
+                        width: showInput ? `${width/4}px` : '100%' ,
+                    }}
                 >
-                    {textPrefix && <span>{textPrefix}</span>}
                     <ReactSelect
                         id={`DropdownInput_${name}`}
                         options={options}
@@ -147,9 +224,8 @@ const DropdownInputTransformer: React.FC<Props> = (props) => {
                         }}
                         className={classNames('Input', className, {Input__focus: showLegend})}
                         classNamePrefix={'DropDown'}
-                        value={value}
-                        onChange={onChange as any} // types are not working correctly for multiselect
-                        styles={{...baseStyles, ...styles}}
+                        onChange={onValueChange}
+                        styles={{...baseStyles, ...styles, ...getMenuStyles()}}
                         {...otherProps}
                     />
                 </div>
@@ -157,7 +233,6 @@ const DropdownInputTransformer: React.FC<Props> = (props) => {
             </fieldset>
             {renderError(error)}
         </div>
-        </>
     );
 };
 
